@@ -45,21 +45,17 @@ class FoursquareAPI
         height = @stored_photo["height"]
         suffix = @stored_photo["suffix"]
         @pic_url = "#{prefix}#{width}x#{height}#{suffix}"
+        if bad_photo(@pic_url)
+          @stored_photo = nil
+        end
       end
     end
-    bad_photo
-    is_bad_photo_true?
+
   end
 
-  def is_bad_photo_true?
-    if bad_photo == true
-      @pic_url = ""
-    end
-  end
-
-  def bad_photo
-    if Photo.where(:url => @pic_url) != []
-      x = Photo.where(:url => @pic_url)
+  def bad_photo(input_url)
+    if Photo.where(:url => input_url) != []
+      x = Photo.where(:url => input_url)
       return true if x.first.vote == false
     end
     false
